@@ -1,8 +1,31 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import App from "./App";
+const mockSubmit=jest.fn()
 
 test("Stimulate login flow", () => {
-  render(<App />);
+  render(<App onSubmit={mockSubmit}/>);
+
+  const userNameText=screen.getByLabelText("Username");
+  const passWordText=screen.getByLabelText("Password");
+
+  fireEvent.change(userNameText,{target:{value:"sarah"}})
+
+  fireEvent.change(passWordText,{target:{value:"12345"}})
+
+  const submitButton=screen.getByRole("button",{name:"Submit"})
+
+  fireEvent.click(submitButton)
+  
+  expect(userNameText.value).toBe("sarah")
+
+  expect(passWordText.value).toBe("12345")
+
+  expect(mockSubmit).toHaveBeenCalledWith({
+    username:"sarah",
+    password:"12345"
+  })
+
+  
   /*
    TODO:
     1. Fill in the username and password fields getByLabelText
